@@ -222,3 +222,5 @@ data/raw/
 models/*.joblib
 pipeline.log
 .ipynb_checkpoints/
+data/exports/*.csv
+models/*.pkl
