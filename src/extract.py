@@ -12,6 +12,8 @@ Usage (run from the project folder):
     python src/extract.py --test                 # first 1,000 rows only
     python src/extract.py                        # full dataset
     python src/extract.py --since 2024-01-01     # only requests created on/after a date
+
+run_pipeline.py calls run() directly.
 """
 import argparse
 import csv
@@ -24,11 +26,11 @@ from pathlib import Path
 
 import pandas as pd
 import requests
-from dotenv import load_dotenv
-from sqlalchemy import create_engine, text
-from sqlalchemy.engine import URL
+from sqlalchemy import text
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from config import PROJECT_ROOT, get_engine  # noqa: E402
+
 RAW_DIR = PROJECT_ROOT / "data" / "raw"          # ignored by .gitignore
 RAW_CSV = RAW_DIR / "requests_raw.csv"
 
@@ -38,31 +40,12 @@ META_URL = f"https://data.edmonton.ca/api/views/{DATASET_ID}.json"
 PAGE_SIZE = 50_000
 TEST_ROWS = 1_000
 
-load_dotenv(PROJECT_ROOT / ".env")
-
 HEADERS = {}
 if os.getenv("SOCRATA_APP_TOKEN"):               # optional; reduces throttling
     HEADERS["X-App-Token"] = os.getenv("SOCRATA_APP_TOKEN")
 
 
 # ---------- database ----------
-
-def get_engine():
-    """Build a SQLAlchemy engine from the settings in .env."""
-    keys = ("DB_USER", "DB_PASSWORD", "DB_HOST", "DB_PORT", "DB_NAME")
-    missing = [k for k in keys if not os.getenv(k)]
-    if missing:
-        sys.exit(f"Missing from .env: {', '.join(missing)}")
-    url = URL.create(
-        "postgresql+psycopg2",
-        username=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-        host=os.getenv("DB_HOST"),
-        port=int(os.getenv("DB_PORT")),
-        database=os.getenv("DB_NAME"),
-    )
-    return create_engine(url)
-
 
 def copy_insert(table, conn, keys, data_iter):
     """Fast insert for pandas.to_sql using PostgreSQL COPY."""
@@ -137,15 +120,9 @@ def tidy(rows, columns):
 
 # ---------- main ----------
 
-def main():
-    parser = argparse.ArgumentParser(description="Extract Edmonton 311 data")
-    parser.add_argument("--test", action="store_true",
-                        help=f"only download the first {TEST_ROWS:,} rows")
-    parser.add_argument("--since", metavar="YYYY-MM-DD",
-                        help="only requests created on or after this date")
-    args = parser.parse_args()
-
-    where = f"date_created >= '{args.since}T00:00:00'" if args.since else None
+def run(test=False, since=None):
+    """Download the dataset and load it into raw.requests. Returns rows loaded."""
+    where = f"date_created >= '{since}T00:00:00'" if since else None
 
     engine = get_engine()
     with engine.connect() as conn:                 # fail fast on bad credentials
@@ -153,7 +130,7 @@ def main():
     print("Connected to PostgreSQL.")
 
     columns = get_columns()
-    expected = TEST_ROWS if args.test else count_rows(where)
+    expected = TEST_ROWS if test else count_rows(where)
     print(f"{len(columns)} columns; {expected:,} rows to download.")
 
     with engine.begin() as conn:
@@ -164,7 +141,7 @@ def main():
     started = time.time()
     done = 0
 
-    for i, rows in enumerate(pages(where, TEST_ROWS if args.test else None)):
+    for i, rows in enumerate(pages(where, TEST_ROWS if test else None)):
         df = tidy(rows, columns)
         df.to_csv(RAW_CSV, index=False, mode="w" if i == 0 else "a", header=(i == 0))
         df.to_sql("requests", engine, schema="raw", if_exists="append",
@@ -181,6 +158,17 @@ def main():
     if loaded != expected:
         sys.exit(f"Row count mismatch: expected {expected:,}, loaded {loaded:,}. "
                  "The dataset may have refreshed mid-download; run it again.")
+    return loaded
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Extract Edmonton 311 data")
+    parser.add_argument("--test", action="store_true",
+                        help=f"only download the first {TEST_ROWS:,} rows")
+    parser.add_argument("--since", metavar="YYYY-MM-DD",
+                        help="only requests created on or after this date")
+    args = parser.parse_args()
+    run(test=args.test, since=args.since)
 
 
 if __name__ == "__main__":
