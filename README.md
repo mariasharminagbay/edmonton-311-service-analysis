@@ -12,7 +12,7 @@ A service manager asked for a clearer view of how 311 requests flow through the 
 
 ## Key findings
 
-1. **Requests passed to City departments are running late more often, and the slowdown began in 2025.** Comparing like for like, the share of referrals that were late was 22.8% in 2023, 22.4% in 2024, 30.8% in 2025 and 35.2% in 2026: about 1 in 3 now, against about 1 in 4.5 two years ago.
+1. **Requests passed to City departments are running late more often, and the slowdown began in spring 2025.** Comparing like for like, the share of referrals that were late was 22.8% in 2023, 22.4% in 2024, 30.8% in 2025 and 35.2% in 2026: about 1 in 3 now, against about 1 in 4.5 two years ago. The break is clean: every month from April 2025 on was above 28% late, while no earlier month was above 27.5%.
 2. **Fewer requests are resolved on first contact.** The share 311 resolved without passing on fell from 61.5% (2023) to 51.8% (2026). Counting on-the-spot answers logged as referrals gives the same decline, so it is not a change in how requests are recorded.
 3. **Many services got slower, but not all.** Bylaw Complaints, one of the busiest services, went from 25.7% to 39.7% late, and Right of Way from 27.9% to 52.5%. Some services improved: Off Schedule (25.1% to 16.4%) and Unsafe Operation (25.1% to 20.7%).
 4. **It is citywide.** Every ward got worse, from 23–29% late in 2023–2025 to 33–41% in 2026. The gap between wards (about 8 points) is smaller than the rise they all share.
@@ -76,7 +76,7 @@ Every run checks that the raw data has no duplicate rows, that each row is one r
 ## Assumptions and limitations
 
 - **Calendar days.** Turnaround is measured in calendar days, so requests made late in the week lose the weekend. Part of the weekday pattern may be the clock, not service quality.
-- **Recent months are incomplete.** Only fast services have had time to be judged for recent months, so the trend chart shows months where at least 90% of requests are old enough. Slow services such as Permits - Building cannot be judged for 2026 yet.
+- **Recent months are incomplete.** Only fast services have had time to be judged for recent months, so the trend chart shows only months where at least 90% of requests are old enough (through August 2026 in the September 2026 data). Slow services such as Permits - Building cannot be judged for 2026 yet.
 - **Missing wards.** 318,230 closed referrals (about a quarter) have no ward. Many are citywide enquiries, but Encampments, parking, bylaw and traffic signal requests are also affected, so ward totals understate those services.
 - **Area-level locations only.** The City publishes neighbourhood and ward centre points, not addresses.
 - **Mix of requests.** The fall in first-contact resolution could partly reflect residents asking about different things, not only 311 resolving less.
