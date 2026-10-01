@@ -6,6 +6,7 @@ Steps, in order:
     2. Transform run sql/02_staging.sql and sql/03_marts.sql (about 7 min)
     3. Checks    stop here if the data looks wrong
     4. Model     train, test and score open requests       (about 4 min)
+    5. Export    write the dashboard's CSV files            (under 1 min)
 
 Usage (from the project folder):
     python run_pipeline.py                  # everything
@@ -23,6 +24,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "src"))
 
 import checks      # noqa: E402
+import export      # noqa: E402
 import extract     # noqa: E402
 import model       # noqa: E402
 import transform   # noqa: E402
@@ -65,6 +67,7 @@ def main():
         sys.exit(1)
 
     step("model", model.main)
+    step("export", export.run)
     log(f"Pipeline finished in {(time.time() - started) / 60:.1f} min")
 
 

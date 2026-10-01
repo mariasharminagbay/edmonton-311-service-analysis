@@ -144,6 +144,65 @@ group by 1;
 
 
 -- ---------------------------------------------------------------------
+-- Trend: late rate by month and category (the headline chart)
+-- Mature requests only, so months are compared like for like. The most
+-- recent months have few mature requests (only fast categories have had
+-- time), so coverage = mature_referrals / referrals shows which months
+-- are complete enough to chart; filter to coverage >= 0.9.
+-- ---------------------------------------------------------------------
+drop table if exists marts.monthly_performance;
+create table marts.monthly_performance as
+with data_end as (
+    select max(created_at) as max_created from staging.requests
+),
+r as (
+    select s.*,
+           extract(epoch from (d.max_created - s.created_at)) / 86400.0 > s.target_days
+                                                              as is_old_enough,
+           coalesce(s.is_late, s.is_overdue)                  as late_known
+    from staging.requests s
+    cross join data_end d
+    where s.referral_type = 'Referral'
+      and not s.is_instant_category
+      and (s.is_late is not null or s.is_open)
+)
+select
+    date_trunc('month', created_at)::date                     as created_month,
+    service_category,
+    count(*)                                                  as referrals,
+    count(*) filter (where is_old_enough)                     as mature_referrals,
+    count(*) filter (where is_old_enough and late_known)      as late_referrals,
+    count(*) filter (where is_late is not null)               as closed_referrals,
+    percentile_cont(0.5) within group (order by days_to_close)
+        filter (where is_late is not null)                    as median_days_to_close
+from r
+group by 1, 2;
+
+
+-- ---------------------------------------------------------------------
+-- Weekday pattern: the model's second-strongest feature
+-- ---------------------------------------------------------------------
+drop table if exists marts.weekday_performance;
+create table marts.weekday_performance as
+with data_end as (
+    select max(created_at) as max_created from staging.requests
+)
+select
+    extract(isodow from s.created_at)::int                    as weekday_num,   -- 1 = Monday
+    trim(to_char(s.created_at, 'Day'))                        as weekday,
+    s.is_training_period,
+    count(*)                                                  as mature_referrals,
+    count(*) filter (where coalesce(s.is_late, s.is_overdue)) as late_referrals
+from staging.requests s
+cross join data_end d
+where s.referral_type = 'Referral'
+  and not s.is_instant_category
+  and (s.is_late is not null or s.is_open)
+  and extract(epoch from (d.max_created - s.created_at)) / 86400.0 > s.target_days
+group by 1, 2, 3;
+
+
+-- ---------------------------------------------------------------------
 -- R6: model data
 -- Label = late. Closed referrals have a known outcome. Open referrals
 -- already past their target are late too, whatever happens next, so
@@ -216,6 +275,18 @@ commit;
 --        mature_2026_referrals, open_requests
 -- from marts.ward_summary
 -- order by pct_late_2026_mature desc;
+
+-- Monthly trend, complete months only (late % by month, all categories)
+-- select created_month,
+--        round(100.0 * sum(late_referrals) / nullif(sum(mature_referrals), 0), 1) as pct_late,
+--        round(sum(mature_referrals)::numeric / sum(referrals), 2)              as coverage
+-- from marts.monthly_performance
+-- group by 1 order by 1;
+
+-- Weekday pattern
+-- select weekday, is_training_period,
+--        round(100.0 * late_referrals / mature_referrals, 1) as pct_late, mature_referrals
+-- from marts.weekday_performance order by is_training_period desc, weekday_num;
 
 -- Model data: size and late share by period
 -- select is_training_period, is_open, count(*), round(100.0 * avg(is_late), 1) as pct_late
