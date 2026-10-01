@@ -1,0 +1,36 @@
+{
+  "chosen": "2023-2025",
+  "results": {
+    "2023-2024": {
+      "train_rows": 643333,
+      "train_late_rate": 0.226,
+      "test_rows": 323581,
+      "late_rate": 0.352,
+      "roc_auc": 0.656,
+      "avg_precision": 0.522,
+      "precision_top20": 0.596,
+      "recall_top20": 0.339
+    },
+    "2023-2025": {
+      "train_rows": 1010691,
+      "train_late_rate": 0.256,
+      "test_rows": 323581,
+      "late_rate": 0.352,
+      "roc_auc": 0.738,
+      "avg_precision": 0.624,
+      "precision_top20": 0.659,
+      "recall_top20": 0.375
+    }
+  },
+  "permutation_importance_roc_auc": {
+    "service_description": 0.2002,
+    "created_weekday": 0.0386,
+    "service_category": 0.0191,
+    "neighbourhood": 0.0183,
+    "created_hour": 0.0066,
+    "service_area": 0.0062,
+    "interaction_channel": 0.002,
+    "created_month_num": 0.0019,
+    "ward": 0.0003
+  }
+}
