@@ -1,6 +1,6 @@
 # Edmonton 311 Service Request Performance
 
-**Live dashboard:** [Tableau Public link — add after publishing]  |  **Tools:** Python, PostgreSQL, SQL, scikit-learn, Tableau
+**Live dashboard:** [Tableau Public](https://public.tableau.com/app/profile/maria.sharmin.agbay/viz/Edmonton311ServicePerformance)  |  **Tools:** Python, PostgreSQL, SQL, scikit-learn, Tableau
 
 ![Dashboard screenshot](dashboards/dashboard.png)
 
@@ -14,7 +14,7 @@ A service manager asked for a clearer view of how 311 requests flow through the 
 
 1. **Requests passed to City departments are running late more often, and the slowdown began in spring 2025.** Comparing like for like, the share of referrals that were late was 22.8% in 2023, 22.4% in 2024, 30.8% in 2025 and 35.2% in 2026: about 1 in 3 now, against about 1 in 4.5 two years ago. The break is clean: every month from April 2025 on was above 28% late, while no earlier month was above 27.5%.
 2. **Fewer requests are resolved on first contact.** The share 311 resolved without passing on fell from 61.5% (2023) to 51.8% (2026). Counting on-the-spot answers logged as referrals gives the same decline, so it is not a change in how requests are recorded.
-3. **Many services got slower, but not all.** Bylaw Complaints, one of the busiest services, went from 25.7% to 39.7% late, and Right of Way from 27.9% to 52.5%. Some services improved: Off Schedule (25.1% to 16.4%) and Unsafe Operation (25.1% to 20.7%).
+3. **Most of the busiest services got slower, but not all.** Of the 15 busiest services, 12 were late more often in 2026 than in 2023–2025. Broken Branch rose most (+37.8 percentage points), much of it from the surge after the July 2026 storms (5,571 requests in July, 73% late); its other 2026 months together were still 49% late. General Information (+24.9) and Snow and Ice maintenance (+21.2) followed, and Bylaw Complaints went from 25.7% to 39.7%. Three improved: Monthly Payment Plan (−13.3 points), Encampments (−12.2) and Potholes (−2.9).
 4. **It is citywide.** Every ward got worse, from 23–29% late in 2023–2025 to 33–41% in 2026. The gap between wards (about 8 points) is smaller than the rise they all share.
 5. **Requests made late in the week wait over the weekend.** In 2023–2025, 33.9% of Friday requests were late against 22–23% for Monday to Wednesday; in 2026, 42.5% against about 32%.
 6. **The model helps prioritise but does not predict individual requests.** If crews checked the riskiest 20% of requests first, they would catch 37.5% of the late ones, against 20% by chance (ROC AUC 0.738).

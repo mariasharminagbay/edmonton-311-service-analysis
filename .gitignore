@@ -224,3 +224,8 @@ pipeline.log
 .ipynb_checkpoints/
 data/exports/*.csv
 models/*.pkl
+
+# Tableau working and temporary files
+*.twb
+*.twbr
+~*
