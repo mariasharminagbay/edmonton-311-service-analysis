@@ -2,7 +2,7 @@
 
 **Live dashboard:** [Tableau Public](https://public.tableau.com/app/profile/maria.sharmin.agbay/viz/Edmonton311ServicePerformance)  |  **Tools:** Python, PostgreSQL, SQL, scikit-learn, Tableau
 
-![Dashboard screenshot](dashboards/Dashboard.png)
+   [![Dashboard preview](dashboards/dashboard_preview.png)](https://public.tableau.com/app/profile/maria.sharmin.agbay/viz/Edmonton311ServicePerformance/Dashboard)
 
 End-to-end analysis of **3,446,386** City of Edmonton 311 requests (January 2023 to September 2026): Python extraction, PostgreSQL staging and summary tables, automated data checks, a model that ranks open requests by their risk of running late, and a dashboard. The whole pipeline rebuilds with one command.
 
