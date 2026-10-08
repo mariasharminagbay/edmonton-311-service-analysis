@@ -108,4 +108,4 @@ Every run checks that the raw data has no duplicate rows, that each row is one r
 └── dashboards/            # screenshots and the workbook
 ```
 
-*Built by Maria — [https://www.linkedin.com/in/maria-sharmin-agbay-a1451951]*
+*Built by Maria Sharmin Agbay — [LinkedIn](https://www.linkedin.com/in/maria-sharmin-agbay-a1451951)*
